@@ -8,11 +8,17 @@ public class GetCosPoints implements GetPoints
     @Override
     public ArrayList<Point2D> createPoint()
     {
-        ArrayList<Point2D> cosPoints = new ArrayList<>();
-        for (int i = 0; i < 1000; i++)
+        ArrayList<Point2D> sinPoints = new ArrayList<>();
+        double x, y;
+        double segment;
+        int n = 1000;
+        for (int i = 0; i < 8 * n; i++)
         {
-            cosPoints.add(new Point2D.Double(i, 100 + 50 * Math.cos(i)));
+            segment = (double) i / n;
+            x = 2 * Math.PI * segment;
+            y = Math.sin(x);
+            sinPoints.add(new Point2D.Double(x * 70, 200 + y * 70));
         }
-        return cosPoints;
+        return sinPoints;
     }
 }

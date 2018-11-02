@@ -9,9 +9,15 @@ public class GetSinPoints implements GetPoints
     public ArrayList<Point2D> createPoint()
     {
         ArrayList<Point2D> sinPoints = new ArrayList<>();
-        for (int i = 0; i < 1000; i++)
+        double x, y;
+        double segment;
+        int n = 1000;
+        for (int i = 0; i < 8 * n; i++)
         {
-            sinPoints.add(new Point2D.Double(4*i, 100 + 50 * Math.sin(i)));
+            segment = (double) i / n;
+            x = 2 * Math.PI * segment;
+            y = Math.sin(x);
+            sinPoints.add(new Point2D.Double(x * 70, 200 + y * 70));
         }
         return sinPoints;
     }
