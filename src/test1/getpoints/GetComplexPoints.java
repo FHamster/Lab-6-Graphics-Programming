@@ -6,13 +6,19 @@ import java.util.ArrayList;
 public class GetComplexPoints implements GetPoints
 {
     @Override
-    public ArrayList<Point2D> createPoint()
+    public ArrayList<Point2D> createPoint(double startX, double startY)
     {
-        ArrayList<Point2D> complexPoints = new ArrayList<>();
-        for (int i = 0; i < 1000; i++)
+        ArrayList<Point2D> sinPoints = new ArrayList<>();
+        double x, y;
+        double segment;
+        int n = 1000;
+        for (int i = 0; i < 8 * n; i++)
         {
-            complexPoints.add(new Point2D.Double(i, 100 + 50 * (Math.sin(i) + Math.cos(i))));
+            segment = (double) i / n;
+            x = 2 * Math.PI * segment;
+            y = Math.sin(x) + Math.cos(x);
+            sinPoints.add(new Point2D.Double(startX + x * 70, startY + y * 70));
         }
-        return complexPoints;
+        return sinPoints;
     }
 }

@@ -4,19 +4,17 @@ import test1.getpoints.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class DrawLineFrame extends JFrame
 {
     //    add button
-    private final JButton SinButton = new JButton("Sin(x)");
-    private final JButton CosButton = new JButton("Cos(x)");
-    private final JButton ComplexButton = new JButton("Sin(x) + Cos(x)");
+    private final JCheckBox SinButton = new JCheckBox("Sin(x)");
+    private final JCheckBox CosButton = new JCheckBox("Cos(x)");
+    private final JCheckBox ComplexButton = new JCheckBox("Sin(x) + Cos(x)");
 
     public DrawLineFrame() //throws HeadlessException
     {
@@ -64,26 +62,6 @@ public class DrawLineFrame extends JFrame
         add(drawLineComponent, BorderLayout.CENTER);
     }
 }
-
-class DrawLineAction implements ActionListener
-{
-    private final List<Point2D> points;
-    private final DrawLineComponent component;
-
-
-    public DrawLineAction(GetPoints getPoints, DrawLineComponent component)
-    {
-        this.points = getPoints.createPoint();
-        this.component = component;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        component.repaintComponent(points);
-    }
-}
-
 class DrawLineComponent extends JComponent
 {
     private List<Line2D> lines;

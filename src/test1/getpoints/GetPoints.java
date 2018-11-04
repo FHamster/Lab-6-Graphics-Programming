@@ -5,5 +5,5 @@ import java.util.ArrayList;
 
 public interface GetPoints
 {
-    ArrayList<Point2D> createPoint();
+    ArrayList<Point2D> createPoint(double startX, double startY);
 }
