@@ -1,9 +1,9 @@
 package test1.getpoints;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface GetPoints
 {
-    ArrayList<Point2D> createPoint(double startX, double startY);
+    List<Point2D> createPoint(double startX, double startY);
 }

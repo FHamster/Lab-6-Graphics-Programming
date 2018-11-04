@@ -12,9 +12,9 @@ import java.util.List;
 public class DrawLineFrame extends JFrame
 {
     //    add button
-    private final JCheckBox SinButton = new JCheckBox("Sin(x)");
-    private final JCheckBox CosButton = new JCheckBox("Cos(x)");
-    private final JCheckBox ComplexButton = new JCheckBox("Sin(x) + Cos(x)");
+    private final JCheckBox SinCheckBox = new JCheckBox("Sin(x)", false);
+    private final JCheckBox CosCheckBox = new JCheckBox("Cos(x)", false);
+    private final JCheckBox ComplexCheckBox = new JCheckBox("Sin(x) + Cos(x)", false);
 
     public DrawLineFrame() //throws HeadlessException
     {
@@ -25,69 +25,94 @@ public class DrawLineFrame extends JFrame
 //        setting Frame size
         setSize(screenSize.width / 3, screenSize.height / 3);
 
-//        initialize button Panel
-        //    button panel
-        //    add panel
-        JPanel buttonPanel = new JPanel();
+//        initialize CheckBox Panel
+        JPanel checkBoxPanel = new JPanel();
 
-//        add button into Panel
-        buttonPanel.add(SinButton);
-        buttonPanel.add(CosButton);
-        buttonPanel.add(ComplexButton);
+//        add CheckBox into Panel
+        checkBoxPanel.add(SinCheckBox);
+        checkBoxPanel.add(CosCheckBox);
+        checkBoxPanel.add(ComplexCheckBox);
 
-//        create button action
-        ArrayList<Point2D> points = new ArrayList<>();
-        points.add(new Point2D.Double(0, 0));
-        points.add(new Point2D.Double(0, 100));
-        points.add(new Point2D.Double(100, 100));
-        points.add(new Point2D.Double(100, 0));
-        points.add(new Point2D.Double(0, 0));
-        DrawLineComponent drawLineComponent = new DrawLineComponent(points);
-
-        //initial getPoint interface
-//          sin
-        DrawLineAction sinAction = new DrawLineAction(new GetSinPoints(), drawLineComponent);
-//          cos
-        DrawLineAction cosAction = new DrawLineAction(new GetCosPoints(), drawLineComponent);
-//          sin + cos
-        DrawLineAction complexAction = new DrawLineAction(new GetComplexPoints(), drawLineComponent);
+//        initialize component
+        DrawLineComponent drawLineComponent = new DrawLineComponent();
 
 //        associate actions with buttons
-        SinButton.addActionListener(sinAction);
-        CosButton.addActionListener(cosAction);
-        ComplexButton.addActionListener(complexAction);
+        SinCheckBox.addItemListener(e ->
+        {
+            String gName = "Sin";
+            if (((JCheckBox) e.getItem()).isSelected())
+            {
+                drawLineComponent.addGraph(gName, new GetSinPoints());
+            } else
+            {
+                drawLineComponent.subGraph(gName);
+            }
+        });
+        CosCheckBox.addItemListener(e ->
+        {
+            String gName = "Cos";
+            if (((JCheckBox) e.getItem()).isSelected())
+            {
+                drawLineComponent.addGraph(gName, new GetCosPoints());
+            } else
+            {
+                drawLineComponent.subGraph(gName);
+            }
+        });
+        ComplexCheckBox.addItemListener(e ->
+        {
+            String gName = "Sin+Cos";
+            if (((JCheckBox) e.getItem()).isSelected())
+            {
+                drawLineComponent.addGraph(gName, new GetComplexPoints());
+            } else
+            {
+                drawLineComponent.subGraph(gName);
+            }
+        });
 
 //        add Panel into Frame
-        add(buttonPanel, BorderLayout.NORTH);
+        add(checkBoxPanel, BorderLayout.NORTH);
         add(drawLineComponent, BorderLayout.CENTER);
     }
 }
+
 class DrawLineComponent extends JComponent
 {
-    private List<Line2D> lines;
+    private HashMap<String, List<Line2D>> graphs;
 
-    public DrawLineComponent(java.util.List<Point2D> points)
+    public DrawLineComponent()
     {
-        this.lines = makeLineFromPoint(points);
+        graphs = new HashMap<>();
     }
 
     @Override
     protected void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        for (Line2D x : lines)
+        for (List<Line2D> x : graphs.values())
         {
-            g2.draw(x);
+            for (Line2D it : x)
+            {
+                g2.draw(it);
+            }
         }
     }
 
-    public void repaintComponent(java.util.List<Point2D> points)
+    public void subGraph(String gName)
     {
-        this.lines = makeLineFromPoint(points);
+        graphs.remove(gName);
         repaint();
     }
 
-    private java.util.List<Line2D> makeLineFromPoint(java.util.List<Point2D> points)
+    public void addGraph(String gName, GetPoints getPoints)
+    {
+        List<Point2D> points = getPoints.createPoint(100, 200);
+        graphs.put(gName, makeLineFromPoint(points));
+        repaint();
+    }
+
+    private List<Line2D> makeLineFromPoint(List<Point2D> points)
     {
         if (points.size() < 2)
         {

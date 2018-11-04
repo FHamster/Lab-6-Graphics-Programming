@@ -2,11 +2,12 @@ package test1.getpoints;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GetComplexPoints implements GetPoints
 {
     @Override
-    public ArrayList<Point2D> createPoint(double startX, double startY)
+    public List<Point2D> createPoint(double startX, double startY)
     {
         ArrayList<Point2D> sinPoints = new ArrayList<>();
         double x, y;
