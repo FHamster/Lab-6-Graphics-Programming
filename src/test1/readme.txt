@@ -25,6 +25,5 @@ CheckBox的使用:
                         drawLineComponent.subGraph(gName);
                     }
                 });
-
-
+问题4：右击拖动无法监听
 

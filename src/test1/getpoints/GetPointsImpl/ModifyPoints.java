@@ -1,10 +1,12 @@
-package test1.getpoints;
+package test1.getpoints.GetPointsImpl;
+
+import test1.getpoints.GetPoints;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetCosPoints implements GetPoints
+public class ModifyPoints implements GetPoints
 {
     @Override
     public List<Point2D> createPoint(double startX, double startY)
@@ -17,7 +19,7 @@ public class GetCosPoints implements GetPoints
         {
             segment = (double) i / n;
             x = 2 * Math.PI * segment;
-            y = Math.cos(x);
+            y = Math.sin(x);
             sinPoints.add(new Point2D.Double(startX + x * 70, startY + y * 70));
         }
         return sinPoints;

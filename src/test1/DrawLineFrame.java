@@ -1,9 +1,16 @@
 package test1;
 
+import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import test1.getpoints.*;
+import test1.getpoints.GetPointsImpl.GetComplexPoints;
+import test1.getpoints.GetPointsImpl.GetCosPoints;
+import test1.getpoints.GetPointsImpl.GetSinPoints;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -74,25 +81,32 @@ public class DrawLineFrame extends JFrame
 //        add Panel into Frame
         add(checkBoxPanel, BorderLayout.NORTH);
         add(drawLineComponent, BorderLayout.CENTER);
+
     }
 }
 
 class DrawLineComponent extends JComponent
 {
-    private HashMap<String, List<Line2D>> graphs;
+    private HashMap<String, List<Point2D>> graphs;//save graph
+    private Point2D curPoint;
+//    private HashMap<String, List<Line2D>> graphs;
 
     public DrawLineComponent()
     {
         graphs = new HashMap<>();
+        /* add component mouse event */
+        MouseHandler handler = new MouseHandler();
+        addMouseListener(handler);
+        addMouseMotionListener(handler);
     }
 
     @Override
-    protected void paintComponent(Graphics g)
+    public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        for (List<Line2D> x : graphs.values())
+        for (List<Point2D> x : graphs.values())
         {
-            for (Line2D it : x)
+            for (Line2D it : makeLineFromPoint(x))
             {
                 g2.draw(it);
             }
@@ -105,10 +119,25 @@ class DrawLineComponent extends JComponent
         repaint();
     }
 
+ /*   private String findGraphByPoint(Point2D p)
+    {
+
+    }*/
+    public void moveGraph(List<Point2D> graph, double moveX, double moveY)
+    {
+        double lastX, lastY;
+        for (Point2D it : graph)
+        {
+            lastX = it.getX();
+            lastY = it.getY();
+            it.setLocation(lastX + moveX, lastY + moveY);
+        }
+    }
+
     public void addGraph(String gName, GetPoints getPoints)
     {
         List<Point2D> points = getPoints.createPoint(100, 200);
-        graphs.put(gName, makeLineFromPoint(points));
+        graphs.put(gName, points);
         repaint();
     }
 
@@ -129,5 +158,113 @@ class DrawLineComponent extends JComponent
             lines.add(tempLine);
         }
         return lines;
+    }
+
+    private String findPointInGraph(Point2D p)
+    {
+        for (Map.Entry<String, List<Point2D>> x : graphs.entrySet())
+        {
+            for (Point2D r : x.getValue())
+            {
+                if ((Math.abs(r.getX() - p.getX()) < 10) &&
+                        (Math.abs(r.getY() - p.getY())) < 10)
+                {
+                    return x.getKey();
+                }
+            }
+        }
+        return null;
+    }
+    private Point2D find(Point2D p)
+    {
+        for (List<Point2D> x : graphs.values())
+        {
+            for (Point2D r : x)
+            {
+                if ((Math.abs(r.getX() - p.getX()) < 10) &&
+                        (Math.abs(r.getY() - p.getY())) < 10)
+                {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /*private class MouseHandler extends MouseAdapter
+    {
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+//            System.out.println(e.getButton());
+            Point2D point = e.getPoint();
+            curPoint = find(point);
+        }
+    }*/
+
+
+    //    private class MouseMotionHandler extends MouseAdapter implements MouseMotionListener
+    private class MouseHandler extends MouseAdapter implements MouseMotionListener
+    {
+        int curButton;
+
+        int lastX;
+        int lastY;
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+            System.out.println(e.getButton());
+            Point2D point = e.getPoint();
+            curPoint = find(point);
+            curButton = e.getButton();
+            lastX = e.getX();
+            lastY = e.getY();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e)
+        {
+            if (curPoint != null)
+            {
+                switch (curButton)
+                {
+                    //left button
+                    case 1:{
+                        System.out.println("drag" + curButton);
+                        //drag current point to point(x,y)
+                        curPoint.setLocation(e.getX(), e.getY());
+                        break;
+                    }
+                    //right button
+                    case 3: {
+                        System.out.println("drag" + curButton);
+//                        System.out.println(findPointInGraph(e.getPoint()));
+                        String tmp = findPointInGraph(e.getPoint());
+
+                        moveGraph(graphs.get(tmp), e.getX() - lastX, e.getY() - lastY);
+
+                        lastX = e.getX();
+                        lastY = e.getY();
+
+                        break;
+                    }
+                }
+                repaint();
+            }
+        }
+
+        public void mouseMoved(MouseEvent event)
+        {
+            // set the mouse cursor to cross hairs if it is inside
+            // a rectangle
+            if (find(event.getPoint()) == null)
+            {
+                setCursor(Cursor.getDefaultCursor());
+            } else
+            {
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            }
+        }
     }
 }

@@ -1,6 +1,9 @@
-package test1.getpoints;
+package test1.getpoints.GetPointsImpl;
+
+import test1.getpoints.GetPoints;
 
 import java.awt.geom.Point2D;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class GetComplexPoints implements GetPoints
         double x, y;
         double segment;
         int n = 1000;
-        for (int i = 0; i < 8 * n; i++)
+        for (int i = 0; i < 4 * n; i++)
         {
             segment = (double) i / n;
             x = 2 * Math.PI * segment;

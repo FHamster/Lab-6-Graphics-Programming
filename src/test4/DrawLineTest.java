@@ -1,16 +1,16 @@
-package test3;
-
-import test1.DrawLineFrame;
+package test4;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class DraggableTest
+class DrawPanelTest
 {
+
     public static void main(String[] args)
     {
-        EventQueue.invokeLater(()->{
-            DrawLineFrame frame = new DrawLineFrame();
+        EventQueue.invokeLater(() ->
+        {
+            DrawPanelFrame frame = new DrawPanelFrame();
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setVisible(true);
         });
